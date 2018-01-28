@@ -1,6 +1,6 @@
 ---
 title: 驿宁共和国入境申请表
-desc: '
+start_desc: '
 # 驿宁共和国入境申请表
 
 <img src="flag.jpg" style="width: 20rem; margin-left: calc(50% - 10rem); margin-right: calc(50% - 10rem);"/>
@@ -12,6 +12,17 @@ desc: '
 回答完所有问题后，您将得到一个通行码。
 
 请将通行码提交给~~群问题验证~~驿宁海关官员，以进入驿宁共和国。
+
+<a href="https://zhuanlan.zhihu.com/p/29125408" target="_blank"> 点此快速了解驿宁共和国 </a>
+'
+code_desc: '
+# 密码
+
+使用此密码加入QQ群: 145152482
+
+当**所有问题回答正确**时将通过验证
+
+如果失败，请__刷新页面__重新尝试答题
 '
 questions:
 - question: 驿宁行星表面积有多大？
