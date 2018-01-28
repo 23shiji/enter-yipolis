@@ -12,7 +12,7 @@
       .row
         form.col.s12(action="#")
           template(v-for="(opt, index) in current_question.options")
-            p(@click="current_question.answer = opt")
+            p.q_option(@click="current_question.answer = opt")
               input.with-gap.light-blue.darken-2(
                 :checked="opt === current_question.answer",
                 name="answer_opt", 
@@ -85,7 +85,7 @@ export default {
     },
     priv_q(){
       if(this.has_priv){
-        this.question_index ++
+        this.question_index --
       }
     },
     gen_password(){
