@@ -115,18 +115,29 @@ export default {
     })
   },
   created(){
-    axios.get('info.yaml')
+    let p1 = axios.get('info.yaml')
       .then(res => YAML.load(res.data))
-      .then(({salt, title, desc, questions}) => {
+      .then(({title, desc, questions}) => {
         document.title = title
-        this.salt = salt
         this.desc = marked(desc.split(/\n+/).join("\n\n"))
         this.questions = questions.map(q => {
           q.answer = null
           return q
         })
-        this.loaded = true
       })
+    let p2 = axios.get('salt.yaml')
+      .then(res => YAML.load(res.data))
+      .then(({salt}) => {
+        this.salt = salt
+      })
+    let p3 = axios.get('answer.yaml')
+      .then(res => YAML.load(res.data))
+      .then(({answer_hash}) => {
+        this.answer_hash = answer_hash
+      })
+    Promise.all([p1, p2, p3]).then(() => {
+      this.loaded = true
+    })
   }
 }
 </script>
