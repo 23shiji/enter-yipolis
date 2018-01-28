@@ -3,6 +3,7 @@ publish:
 	git commit -m autosave || echo "master clear"
 	git push origin master
 	git checkout gh-pages
+	git merge master 'auto merge'
 	yarn build
 	git add .
 	git commit -m 'auto build'
