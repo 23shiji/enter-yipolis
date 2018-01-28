@@ -3,7 +3,7 @@
   template(v-if="loaded")
     #stage_0(v-if="stage === 0").container
       .row
-        .desc.col.s12(v-html = 'desc')
+        .desc.col.s12(v-html = 'markdown(start_desc)')
       .row
         button.col.s12.btn.light-blue.darken-2(@click="start_q") START
     #stage_1(v-if="stage === 1").container
@@ -23,15 +23,14 @@
         button.col.s6.btn.grey.lighten-1.black-text(:class="{disabled: !has_priv}", @click="priv_q") PRIV
         button.col.s6.btn.light-blue.darken-2(v-if="!is_last_question", :class="{disabled: !has_next}", @click="next_q") NEXT
         button.col.s6.btn.light-blue.darken-2(v-else, @click="end_q") FINISH
-    #stage_2(v-if="stage === 2")
+    #stage_2(v-if="stage === 2").container
       .row
-        h1.col.s12 CODE
+        .desc.col.s12(v-html = 'markdown(code_desc)')
       .row
         .input-field.col.s12
           input#password_input.disabled(type="text", v-model="password")
       .row
-        .col.s12
-          button#copy_btn.btn.light-blue.darken-2(
+          button#copy_btn.col.s12.btn.light-blue.darken-2(
             data-clipboard-target="#password_input"
           ) COPY TO CLIPBOARD
   #loading(v-else)
@@ -60,7 +59,8 @@ export default {
       question_index: 0,
       questions: null,
       salt: null,
-      desc: ''
+      start_desc: '',
+      code_desc: ''
     }
   },
   computed: {
@@ -103,6 +103,9 @@ export default {
     },
     toast(txt){
       Materialize.toast(txt, 3000)
+    },
+    markdown(s){
+      return marked(s.split(/\n+/).join("\n\n"))
     }
   },
   mounted(){
@@ -117,9 +120,10 @@ export default {
   created(){
     let p1 = axios.get('info.yaml')
       .then(res => YAML.load(res.data))
-      .then(({title, desc, questions}) => {
+      .then(({title, start_desc, questions, code_desc}) => {
         document.title = title
-        this.desc = marked(desc.split(/\n+/).join("\n\n"))
+        this.code_desc = code_desc
+        this.start_desc = start_desc
         this.questions = questions.map(q => {
           q.answer = null
           return q
