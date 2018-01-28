@@ -5,10 +5,12 @@
       .row
         .desc.col.s12(v-html = 'markdown(start_desc)')
       .row
-        button.col.s12.btn.light-blue.darken-2(@click="start_q") START
+        button.col.s12.btn.light-blue.darken-2(@click="start_q") 开始答题
     #stage_1(v-if="stage === 1").container
       .row
         h2.light-blue-text.text-darken-2.col.s12 {{current_question.question}}
+      .row
+        p.index_counter.blue-grey-text.text-lighten-2.col.s12 ({{question_index+1}} / {{questions.length}})
       .row
         form.col.s12(action="#")
           template(v-for="(opt, index) in current_question.options")
@@ -20,9 +22,12 @@
                 :id="'ans_opt_'+index")
               label.black-text.large(:for="'ans_opt_'+index") {{opt}}
       .row
-        button.col.s6.btn.grey.lighten-1.black-text(:class="{disabled: !has_priv}", @click="priv_q") PRIV
-        button.col.s6.btn.light-blue.darken-2(v-if="!is_last_question", :class="{disabled: !has_next}", @click="next_q") NEXT
-        button.col.s6.btn.light-blue.darken-2(v-else, @click="end_q") FINISH
+        button.col.s6.btn.grey.lighten-1.black-text(:class="{disabled: !has_priv}", @click="priv_q")
+          | 上一题
+        button.col.s6.btn.light-blue.darken-2(v-if="!is_last_question", :class="{disabled: !has_next}", @click="next_q")
+          | 下一题
+        button.col.s6.btn.light-blue.darken-2(v-else, @click="end_q")
+          | 完成答题
     #stage_2(v-if="stage === 2").container
       .row
         .desc.col.s12(v-html = 'markdown(code_desc)')
@@ -30,9 +35,10 @@
         .input-field.col.s12
           input#password_input.disabled(type="text", v-model="password")
       .row
-          button#copy_btn.col.s12.btn.light-blue.darken-2(
+          button.col.s6.btn.orange(@click="reset_status") 重新答题
+          button#copy_btn.col.s6.btn.light-blue.darken-2(
             data-clipboard-target="#password_input"
-          ) COPY TO CLIPBOARD
+          ) 复制到剪贴板
   #loading(v-else)
     h1.title Loading
     .preloader-wrapper.big.active
@@ -106,6 +112,13 @@ export default {
     },
     markdown(s){
       return marked(s.split(/\n+/).join("\n\n"))
+    },
+    reset_status(){
+      for(let q of this.questions){
+        q.answer = null
+      }
+      this.question_index = 0
+      this.stage = 0
     }
   },
   mounted(){
@@ -173,5 +186,8 @@ h1 {
 #password_input{
   text-align: center;
   font-size: 2.5rem;
+}
+.index_counter, h2{
+  margin: 0;
 }
 </style>
