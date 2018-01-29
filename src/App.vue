@@ -11,7 +11,12 @@
         h2.light-blue-text.text-darken-2.col.s12 {{current_question.question}}
       .row
         p.index_counter.blue-grey-text.text-lighten-2.col.s12 ({{question_index+1}} / {{questions.length}})
-      .row
+      .row(v-if="current_question.desc")
+        .desc.col.s12(v-html = 'markdown(current_question.desc)')
+      .row(v-if="current_question.type === 'input'")
+        .input-field.col.s12
+          input#answer_input(type="text", v-model="current_question.answer", :placeholder="current_question.tips")
+      .row(v-else)
         form.col.s12(action="#")
           template(v-for="(opt, index) in current_question.options")
             p.q_option(@click="current_question.answer = opt")
@@ -133,14 +138,10 @@ export default {
   created(){
     let p1 = axios.get('info.yaml')
       .then(res => YAML.load(res.data))
-      .then(({title, start_desc, questions, code_desc}) => {
+      .then(({title, start_desc, code_desc}) => {
         document.title = title
         this.code_desc = code_desc
         this.start_desc = start_desc
-        this.questions = questions.map(q => {
-          q.answer = null
-          return q
-        })
       })
     let p2 = axios.get('salt.yaml')
       .then(res => YAML.load(res.data))
@@ -152,7 +153,15 @@ export default {
       .then(({answer_hash}) => {
         this.answer_hash = answer_hash
       })
-    Promise.all([p1, p2, p3]).then(() => {
+    let p4 = axios.get('questions.yaml')
+      .then(res => YAML.load(res.data))
+      .then((questions) => {
+        this.questions = questions.map(q => {
+          q.answer = null
+          return q
+        })
+      })
+    Promise.all([p1, p2, p3, p4]).then(() => {
       this.loaded = true
     })
   }
@@ -166,6 +175,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   font-size: 1.5rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 #tab_edit{
   min-height: 40rem;
